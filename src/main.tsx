@@ -5,6 +5,8 @@ import Dashboard from './pages/Dashboard'
 import Sell from './pages/Sell'
 import Inventory from './pages/Inventory'
 import History from './pages/History'
+import Debts from './pages/Debts'
+import Settings from './pages/Settings'
 import './index.css'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
@@ -15,14 +17,17 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/sell" element={<Sell />} />
+            <Route path="/debts" element={<Debts />} />
             <Route path="/inventory" element={<Inventory />} />
             <Route path="/history" element={<History />} />
+            <Route path="/settings" element={<Settings />} />
           </Routes>
         </main>
         <nav className="fixed bottom-0 left-0 right-0 z-10 flex border-t border-stone-800 bg-stone-950/95 backdrop-blur">
           {[
             ['/', 'Today', '📊'],
             ['/sell', 'Sell', '🛒'],
+            ['/debts', 'Credit', '📒'],
             ['/inventory', 'Stock', '📦'],
             ['/history', 'Sales', '🧾'],
           ].map(([to, label, icon]) => (
@@ -38,6 +43,10 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
               {label}
             </NavLink>
           ))}
+          <NavLink to="/settings" className={({ isActive }) => `flex flex-1 flex-col items-center py-2.5 text-xs ${isActive ? 'text-emerald-400 font-semibold' : 'text-stone-500'}`}>
+            <span className="text-lg">⚙️</span>
+            Backup
+          </NavLink>
         </nav>
       </div>
     </BrowserRouter>

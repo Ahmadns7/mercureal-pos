@@ -14,7 +14,7 @@ export default function Dashboard() {
 
   return (
     <div>
-      <h1 className="mb-1 text-xl font-bold">Today</h1>
+      <div className="mb-1 flex items-center justify-between"><h1 className="text-xl font-bold">Today</h1><Link to="/settings" className="text-lg">⚙️</Link></div>
       <p className="mb-4 text-sm text-stone-500">{new Date().toLocaleDateString('en-NG', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
       <div className="grid grid-cols-2 gap-3">
         <Stat label="Revenue" value={formatNaira(s.revenue)} testid="revenue" />

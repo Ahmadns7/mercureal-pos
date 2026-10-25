@@ -1,0 +1,9 @@
+{
+  "name": "MercuReal POS",
+  "short_name": "MR POS",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0c0a09",
+  "theme_color": "#10b981",
+  "icons": []
+}

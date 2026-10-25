@@ -1,0 +1,6 @@
+@tailwind base;
+@tailwind utilities;
+
+body {
+  @apply bg-stone-950 text-stone-100 antialiased;
+}

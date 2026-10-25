@@ -19,6 +19,31 @@ Offline-first point-of-sale PWA for small Nigerian shops. Mobile-first, built wi
 - Vitest unit tests for sale math and stock logic
 - GitHub Actions CI (test + build on push)
 
+## AI features (20)
+
+Works with a free Groq key (console.groq.com/keys, stored on-device) or degrades to rule-based analysis without one:
+
+1. Daily AI business insights
+2. AI restock plan with priorities
+3. Pricing advisor (thin/wide margin flags)
+4. Cashflow advisor (take-home vs expenses vs credit)
+5. AI weekly business report
+6. Product trend detection (rising / cooling items)
+7. 7-day sales forecast (linear trend)
+8. Slow-day anomaly alerts
+9. Best-seller ranking
+10. Ask-my-books chat over live sales, stock, credit and expenses data
+11. AI debt-collection message drafts
+12. Voice sale entry ("sold 2 bread and 3 milk")
+13. Typo-tolerant smart product search
+14. AI product category + emoji suggestions
+15. Bulk product import from messy pasted lists
+16. AI receipt thank-you notes
+17. Rule-based fallback for every AI card (works with no key)
+18. Take-home dashboard (profit minus expenses)
+19. Auto restock list from stock levels
+20. Key stays on-device, stored only in localStorage
+
 ## Setup
 
 ```bash

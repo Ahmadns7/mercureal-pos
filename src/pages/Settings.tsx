@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { downloadFile, makeBackup, restoreBackup, salesCsv } from '../lib/backup'
 import { loadSales } from '../lib/store'
 import { loadSyncSettings, pullSnapshot, pushSnapshot, saveSyncSettings } from '../lib/sync'
+import { getAiKey, setAiKey } from '../lib/ai'
 
 export default function Settings() {
   const fileRef = useRef<HTMLInputElement>(null)
@@ -27,6 +28,7 @@ export default function Settings() {
     reader.readAsText(file)
   }
 
+  const [aiKey, setAiKeyValue] = useState(getAiKey())
   const syncCfg = loadSyncSettings()
   const [shopId, setShopId] = useState(syncCfg?.shopId ?? '')
   const [pin, setPin] = useState(syncCfg?.pin ?? '')
@@ -80,6 +82,20 @@ export default function Settings() {
         />
       </div>
       {msg && <p className="mt-3 text-center text-sm text-emerald-400" data-testid="msg">{msg}</p>}
+
+      <h1 className="mb-2 mt-8 text-xl font-bold">AI settings</h1>
+      <p className="mb-3 text-sm text-stone-500">Free groq key powers the AI features. Get one at console.groq.com/keys — it stays on this device.</p>
+      <div className="mb-2 flex gap-2">
+        <input
+          value={aiKey}
+          onChange={(e) => setAiKeyValue(e.target.value)}
+          type="password"
+          placeholder="gsk_..."
+          className="w-full rounded-xl border border-stone-700 bg-stone-950 px-3 py-2 text-sm"
+          data-testid="ai-key"
+        />
+        <button onClick={() => { setAiKey(aiKey); setSyncMsg('ai key saved ✅') }} className="rounded-xl bg-emerald-500 px-4 text-sm font-semibold text-stone-950" data-testid="save-ai-key">Save</button>
+      </div>
 
       <h1 className="mb-2 mt-8 text-xl font-bold">Cloud sync</h1>
       <p className="mb-3 text-sm text-stone-500">One shop id + pin per shop. Use the same pair on any device to push/pull everything. Pin is checked on pull.</p>

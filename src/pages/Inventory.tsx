@@ -1,11 +1,20 @@
 import { useState } from 'react'
 import { formatNaira } from '../lib/format'
 import { loadInventory, loadStockDeltas, currentStock, saveInventory } from '../lib/store'
+import { askAi, isAiReady } from '../lib/ai'
 import type { Product } from '../lib/types'
+
+function emojiFor(category: string): string {
+  const map: Record<string, string> = { fashion: '👕', electronics: '🔌', home: '🏠', beauty: '🧴', food: '🍽️' }
+  return map[category.toLowerCase()] ?? '📦'
+}
 
 export default function Inventory() {
   const [products, setProducts] = useState<Product[]>(() => loadInventory())
   const [adding, setAdding] = useState(false)
+  const [aiBusy, setAiBusy] = useState(false)
+  const [bulk, setBulk] = useState('')
+  const [bulkMsg, setBulkMsg] = useState('')
   const [form, setForm] = useState({ name: '', cost: '', price: '', stock: '', emoji: '📦' })
 
   const persist = (next: Product[]) => {
@@ -35,6 +44,40 @@ export default function Inventory() {
     setAdding(false)
   }
 
+  const aiPolish = async () => {
+    if (!form.name) return
+    setAiBusy(true)
+    try {
+      const resp = await askAi([
+        { role: 'system', content: 'For a Nigerian shop inventory, given a product name reply with ONE line: <category>: <description max 10 words>. Category from: Fashion, Electronics, Home, Beauty, Food, Other.' },
+        { role: 'user', content: form.name },
+      ])
+      const [cat, desc] = (resp || '').split(':')
+      if (cat && desc) {
+        setForm((f) => ({ ...f, name: f.name, emoji: emojiFor(cat.trim()) }))
+        setBulkMsg(`${cat.trim()} — ${desc.trim()}`)
+      }
+    } catch { setBulkMsg('ai unavailable') } finally { setAiBusy(false) }
+  }
+
+  const runBulk = async () => {
+    if (!bulk.trim()) return
+    setAiBusy(true)
+    try {
+      const resp = await askAi([
+        { role: 'system', content: 'Convert a messy product list into JSON array of {name,cost,price,stock}. Numbers as plain digits (naira). Missing fields: guess typical Nigerian prices. Reply with ONLY the JSON.' },
+        { role: 'user', content: bulk },
+      ])
+      const items = JSON.parse(resp.slice(resp.indexOf('['), resp.lastIndexOf(']') + 1))
+      const next = [...products, ...items.map((x: { name: string; cost?: number; price?: number; stock?: number }, n: number) => ({
+        id: 'b' + Date.now().toString(36) + n, name: x.name, cost: x.cost ?? 0, price: x.price ?? 0, stock: x.stock ?? 0, emoji: '📦',
+      }))]
+      persist(next)
+      setBulk('')
+      setBulkMsg(`imported ${items.length} products ✅`)
+    } catch { setBulkMsg('could not parse that list, try clearer formatting') } finally { setAiBusy(false) }
+  }
+
   return (
     <div className="pb-16">
       <div className="mb-4 flex items-center justify-between">
@@ -52,11 +95,25 @@ export default function Inventory() {
             <input value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} inputMode="numeric" placeholder="Price ₦" className="w-full rounded-xl border border-stone-700 bg-stone-950 px-3 py-2" />
             <input value={form.stock} onChange={(e) => setForm({ ...form, stock: e.target.value })} inputMode="numeric" placeholder="Qty" className="w-full rounded-xl border border-stone-700 bg-stone-950 px-3 py-2" />
           </div>
+          {isAiReady() && (
+            <button onClick={aiPolish} disabled={aiBusy} className="w-full rounded-xl border border-emerald-500 py-2 text-xs font-semibold text-emerald-400" data-testid="ai-polish">
+              {aiBusy ? 'thinking…' : '✨ AI: guess category + emoji'}
+            </button>
+          )}
           <button onClick={submit} className="w-full rounded-xl bg-emerald-500 py-2.5 font-semibold text-stone-950" data-testid="save-product">
             Save product
           </button>
         </div>
       )}
+
+      <div className="mb-4 space-y-2 rounded-2xl border border-stone-800 bg-stone-900 p-3">
+        <div className="text-xs font-semibold text-stone-400">📋 Bulk import (paste any messy list, AI structures it)</div>
+        <textarea value={bulk} onChange={(e) => setBulk(e.target.value)} rows={3} placeholder="e.g. 5 crates of eggs at 4800 sell 5500, 20 bread 900/1500..." className="w-full rounded-xl border border-stone-700 bg-stone-950 px-3 py-2 text-sm" data-testid="bulk-input" />
+        <button onClick={runBulk} disabled={aiBusy} className="w-full rounded-xl bg-stone-800 py-2 text-xs font-semibold disabled:opacity-40" data-testid="bulk-import">
+          {aiBusy ? 'thinking…' : 'Import with AI'}
+        </button>
+        {bulkMsg && <p className="text-xs text-emerald-400">{bulkMsg}</p>}
+      </div>
 
       {products.map((p) => {
         const stock = currentStock(products, loadStockDeltas(), p.id)

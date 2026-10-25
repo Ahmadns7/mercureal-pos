@@ -10,6 +10,8 @@ import Settings from './pages/Settings'
 import Expenses from './pages/Expenses'
 import Stats from './pages/Stats'
 import Receipt from './pages/Receipt'
+import Insights from './pages/Insights'
+import AiChat from './pages/AiChat'
 import './index.css'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
@@ -26,6 +28,8 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
             <Route path="/expenses" element={<Expenses />} />
             <Route path="/stats" element={<Stats />} />
             <Route path="/receipt/:id" element={<Receipt />} />
+            <Route path="/insights" element={<Insights />} />
+            <Route path="/ask" element={<AiChat />} />
             <Route path="/settings" element={<Settings />} />
           </Routes>
         </main>

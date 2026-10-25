@@ -5,6 +5,7 @@ export type Product = {
   price: number
   stock: number
   emoji: string
+  category?: string
 }
 
 export type SaleItem = { name: string; qty: number; price: number; cost: number }

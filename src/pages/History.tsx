@@ -31,7 +31,12 @@ export default function History() {
                 <div className="text-xs text-stone-500">profit {formatNaira(s.profit)}</div>
               </div>
             </button>
-            {open === d && (
+            {open === d && sales.filter((x) => dayKey(x.at) === d).map((sale) => (
+              <div key={sale.id} className="px-3 pb-2 text-[11px] text-stone-600">
+                <a href={`#/receipt/${sale.id}`} className="text-emerald-500">receipt</a>
+              </div>
+            ))}
+            {false && (
               <div className="border-t border-stone-800 px-3 py-2 text-xs text-stone-400">
                 {daySales.map((sale) => (
                   <div key={sale.id} className="flex justify-between py-0.5">

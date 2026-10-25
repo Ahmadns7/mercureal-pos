@@ -8,5 +8,5 @@ export type Product = {
 }
 
 export type SaleItem = { name: string; qty: number; price: number; cost: number }
-export type Sale = { id: string; at: string; method: 'cash' | 'transfer'; items: SaleItem[] }
+export type Sale = { id: string; at: string; method: 'cash' | 'transfer'; items: SaleItem[]; discount?: number }
 export type CartLine = { product: Product; qty: number }

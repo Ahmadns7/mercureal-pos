@@ -2,9 +2,12 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { formatNaira } from '../lib/format'
 import { loadInventory, loadSales, loadStockDeltas, lowStock, summarizeDay, todayKey } from '../lib/store'
+import { expensesOn, loadExpenses } from '../lib/expenses'
 
 export default function Dashboard() {
   const [s, setS] = useState(() => summarizeDay(loadSales(), todayKey()))
+  const todayExpenses = expensesOn(loadExpenses(), todayKey())
+  const takeHome = s.profit - todayExpenses
   const lows = lowStock(loadInventory(), loadStockDeltas())
 
   useEffect(() => {
@@ -18,9 +21,13 @@ export default function Dashboard() {
       <p className="mb-4 text-sm text-stone-500">{new Date().toLocaleDateString('en-NG', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
       <div className="grid grid-cols-2 gap-3">
         <Stat label="Revenue" value={formatNaira(s.revenue)} testid="revenue" />
-        <Stat label="Profit" value={formatNaira(s.profit)} testid="profit" />
+        <Stat label="Gross profit" value={formatNaira(s.profit)} testid="profit" />
         <Stat label="Sales" value={String(s.count)} testid="sales-count" />
         <Stat label="Items sold" value={String(s.items)} testid="items-sold" />
+      </div>
+      <div className="mt-3 rounded-2xl border border-emerald-600/50 bg-emerald-900/20 p-3">
+        <div className="text-xs text-stone-500">Take-home today (profit − expenses)</div>
+        <div className="mt-1 text-lg font-bold text-emerald-400" data-testid="take-home">{formatNaira(takeHome)}</div>
       </div>
       <Link to="/sell" className="mt-5 block rounded-xl bg-emerald-500 py-3 text-center font-semibold text-stone-950 active:scale-[0.98]">
         New sale

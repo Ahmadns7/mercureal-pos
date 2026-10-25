@@ -60,17 +60,18 @@ export function saveStockDeltas(deltas: Record<string, number>) {
   localStorage.setItem(STOCK_KEY, JSON.stringify(deltas))
 }
 
-export function newSale(items: SaleItem[], method: 'cash' | 'transfer'): Sale {
+export function newSale(items: SaleItem[], method: 'cash' | 'transfer', discount = 0): Sale {
   return {
     id: 'S' + Date.now().toString(36).toUpperCase(),
     at: new Date().toISOString(),
     method,
     items,
+    discount,
   }
 }
 
 export function saleTotal(sale: Sale): number {
-  return sale.items.reduce((s, i) => s + i.qty * i.price, 0)
+  return Math.max(0, sale.items.reduce((s, i) => s + i.qty * i.price, 0) - (sale.discount ?? 0))
 }
 
 export function saleCost(sale: Sale): number {

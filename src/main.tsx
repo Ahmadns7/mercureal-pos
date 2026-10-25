@@ -7,6 +7,9 @@ import Inventory from './pages/Inventory'
 import History from './pages/History'
 import Debts from './pages/Debts'
 import Settings from './pages/Settings'
+import Expenses from './pages/Expenses'
+import Stats from './pages/Stats'
+import Receipt from './pages/Receipt'
 import './index.css'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
@@ -20,6 +23,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
             <Route path="/debts" element={<Debts />} />
             <Route path="/inventory" element={<Inventory />} />
             <Route path="/history" element={<History />} />
+            <Route path="/expenses" element={<Expenses />} />
+            <Route path="/stats" element={<Stats />} />
+            <Route path="/receipt/:id" element={<Receipt />} />
             <Route path="/settings" element={<Settings />} />
           </Routes>
         </main>

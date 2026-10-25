@@ -2,7 +2,6 @@
 
 Offline-first point-of-sale PWA for small Nigerian shops. Mobile-first, built with Vite + React + TypeScript + Tailwind. All data stays on the device (localStorage), works with no network after first load.
 
-Live demo: import this repo on [Vercel](https://vercel.com) (preset Vite, build `npm run build`, output `dist`).
 
 ## Features
 
